@@ -1,0 +1,36 @@
+name: Validate Sigma rules
+
+on:
+  push:
+    paths: ["rules/**", ".github/workflows/validate-sigma.yml"]
+  pull_request:
+    paths: ["rules/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install sigma-cli and backends
+        run: |
+          pip install sigma-cli
+          sigma plugin install splunk
+          sigma plugin install kusto
+
+      - name: Check rule syntax and quality
+        run: sigma check rules/
+
+      - name: Test conversion to Splunk
+        run: sigma convert -t splunk --without-pipeline rules/
+
+      - name: Test conversion to KQL (Defender XDR process rules)
+        run: sigma convert -t kusto -p microsoft_xdr --skip-unsupported rules/
