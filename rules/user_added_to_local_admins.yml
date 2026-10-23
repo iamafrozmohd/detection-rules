@@ -1,0 +1,26 @@
+title: User Added to Local Administrators Group
+id: c1f99d4e-f67e-40ea-bc33-a6d187c799c9
+status: experimental
+description: |
+  Detects an account being added to the built-in local Administrators group (SID S-1-5-32-544).
+  Attackers add accounts to this group to keep privileged access to a host.
+author: Afroz Mohammed
+date: 2026-10-22
+references:
+  - https://attack.mitre.org/techniques/T1098/
+  - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4732
+tags:
+  - attack.persistence
+  - attack.privilege-escalation
+  - attack.t1098
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4732
+    TargetSid: 'S-1-5-32-544'
+  condition: selection
+falsepositives:
+  - Planned administrative changes by IT. Correlate with change tickets and the account that made the change (SubjectUserName).
+level: medium
