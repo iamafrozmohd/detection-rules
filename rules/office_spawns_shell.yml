@@ -1,0 +1,39 @@
+title: Office Application Spawning a Shell or Script Host
+id: 89299fd8-7695-4280-951c-890a1942134f
+status: experimental
+description: |
+  Detects Word, Excel, PowerPoint or Outlook starting a command shell or script interpreter.
+  This is a classic sign of a malicious macro or attachment from a phishing email.
+author: Afroz Mohammed
+date: 2026-10-22
+references:
+  - https://attack.mitre.org/techniques/T1566/001/
+  - https://attack.mitre.org/techniques/T1204/002/
+tags:
+  - attack.initial-access
+  - attack.t1566.001
+  - attack.execution
+  - attack.t1204.002
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - '\winword.exe'
+      - '\excel.exe'
+      - '\powerpnt.exe'
+      - '\outlook.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\regsvr32.exe'
+  condition: selection
+falsepositives:
+  - Rare legitimate add-ins or macros. Allow-list by command line after review.
+level: high
