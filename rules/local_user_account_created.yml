@@ -1,0 +1,24 @@
+title: Local User Account Created
+id: 7732b0ee-cddb-47e0-a85d-e6a7fbc8ca91
+status: experimental
+description: |
+  Detects creation of a new user account (Windows Security Event 4720).
+  Attackers create local accounts to keep access even if a compromised password is reset.
+author: Afroz Mohammed
+date: 2026-10-22
+references:
+  - https://attack.mitre.org/techniques/T1136/001/
+  - https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4720
+tags:
+  - attack.persistence
+  - attack.t1136.001
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4720
+  condition: selection
+falsepositives:
+  - Normal onboarding and provisioning. Most useful on servers and workstations where local accounts should rarely be created.
+level: low
